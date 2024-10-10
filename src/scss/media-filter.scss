@@ -1,0 +1,47 @@
+:host {
+  display: flex;
+
+  flex-direction: column;
+  overflow: auto;
+
+  // Hide scrollbar: Firefox
+  scrollbar-width: none;
+  // Hide scrollbar: IE and Edge
+  -ms-overflow-style: none;
+
+  height: 100%;
+  width: 300px;
+  margin: 5px;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+:host::-webkit-scrollbar {
+  display: none;
+}
+
+frigate-card-select {
+  padding: 5px;
+}
+
+div.when {
+  display: inline-flex;
+  align-items: flex-end;
+}
+div.when frigate-card-select {
+  flex: 1;
+}
+div.when frigate-card-date-picker {
+  // Visually line up the date-picker icon with the bottom of the select
+  // dropdown.
+  padding-bottom: 5px;
+  transition: width 0.5s ease-in-out;
+}
+div.when frigate-card-date-picker {
+  color: var(--secondary-color);
+}
+div.when frigate-card-date-picker.selected {
+  color: var(--primary-color);
+}
+div.when frigate-card-date-picker.hidden {
+  width: 0px;
+}

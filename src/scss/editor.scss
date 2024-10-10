@@ -1,0 +1,113 @@
+@use './button.scss';
+
+.option {
+  padding: 4px 4px;
+  cursor: pointer;
+}
+.option.option-overrides .title {
+  color: var(--warning-color);
+}
+.row {
+  display: flex;
+  margin-bottom: -14px;
+  pointer-events: none;
+}
+.title {
+  padding-left: 16px;
+  margin-top: -6px;
+  pointer-events: none;
+}
+.title.warning {
+  color: var(--warning-color);
+}
+.secondary {
+  padding-left: 40px;
+  color: var(--secondary-text-color);
+  pointer-events: none;
+}
+.values {
+  background: var(--secondary-background-color);
+  display: grid;
+}
+// Space submenus from the next top-level options.
+.values + .option,
+.submenu + .option {
+  margin-top: 10px;
+}
+div.upgrade {
+  width: auto;
+  border: 1px dotted var(--primary-color);
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+div.upgrade span {
+  padding: 10px;
+}
+
+.submenu-header {
+  display: flex;
+  padding: 10px;
+
+  cursor: pointer;
+}
+.submenu.selected > .submenu-header {
+  background-color: var(--primary-color);
+  color: var(--primary-text-color);
+}
+
+.submenu-header * {
+  flex-basis: auto;
+
+  // Only allow clicks on the header.
+  pointer-events: none;
+}
+.submenu-header .new-camera {
+  font-style: italic;
+}
+.submenu:not(.selected) > .submenu-header .new-camera {
+  color: var(--secondary-text-color, 'black');
+}
+
+.submenu-header ha-icon,
+.submenu-header ha-svg-icon {
+  padding-right: 15px;
+}
+
+.submenu.selected {
+  border: 1px solid var(--primary-color);
+}
+
+// Nested menus should shrink width.
+.submenu {
+  width: calc(100% - 10px * 2);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+}
+
+// Add a margin above a submenu unless it's another submenu.
+.submenu:first-child,
+:not(.submenu) + .submenu {
+  margin-top: 10px;
+}
+
+.submenu .controls {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: 0px;
+  margin-bottom: 5px;
+}
+.submenu .controls ha-icon-button.button {
+  --mdc-icon-button-size: 32px;
+  --mdc-icon-size: calc(var(--mdc-icon-button-size) / 2);
+}
+span.info {
+  padding: 10px;
+}
+
+ha-selector {
+  padding: 10px;
+  border: 1px solid var(--divider-color);
+}

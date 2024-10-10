@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "target": "es2021",
+    "module": "es2020",
+    "moduleResolution": "node",
+    "lib": ["es2021", "dom", "dom.iterable"],
+    "noEmit": true,
+    "noErrorTruncation": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "plugins": [
+      {
+        "name": "ts-lit-plugin",
+        "strict": false,
+        // These tags are provided by the HA frontend and [almost all] cannot be
+        // imported by a custom card directly.
+        "globalTags": [
+          "ha-button-menu",
+          "ha-button",
+          "ha-card",
+          "ha-circular-progress",
+          "ha-combo-box",
+          "ha-icon-button",
+          "ha-icon",
+          "ha-selector",
+          "ha-svg-icon",
+          "mwc-button",
+          "mwc-list-item"
+        ],
+        "rules": {
+          "no-unknown-tag-name": "error",
+          "no-missing-import": "error",
+          "no-unclosed-tag": "error",
+          "no-incompatible-type-binding": "warning",
+          "no-invalid-css": "warning",
+          "no-missing-element-type-definition": "warning",
+          "no-property-visibility-mismatch": "error"
+        }
+      }
+    ]
+  }
+}

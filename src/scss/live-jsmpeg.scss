@@ -1,0 +1,15 @@
+@use 'media-layout.scss';
+
+:host {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  @include media-layout.media-layout();
+}

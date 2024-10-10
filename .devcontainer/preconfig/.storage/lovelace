@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace",
+  "data": {
+    "config": {
+      "title": "Frigate Card",
+      "views": [
+        {
+          "theme": "Backend-selected",
+          "title": "Basic",
+          "path": "basic",
+          "badges": [],
+          "cards": [
+            {
+              "type": "custom:frigate-card",
+              "name": "Frigate Card with Frigate Camera",
+              "cameras": [
+                {
+                  "camera_entity": "camera.big_buck_bunny",
+                  "live_provider": "jsmpeg",
+                  "id": "big_buck_bunny_jsmpeg"
+                },
+                {
+                  "camera_entity": "camera.big_buck_bunny",
+                  "live_provider": "ha",
+                  "id": "big_buck_bunny_ha"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,223 @@
+:host {
+  display: block;
+
+  // Anchor absolutes to the outermost part of the card.
+  position: relative;
+
+  // Different browsers use different colors as their fullscreen background,
+  // this ensures the same experience across all browsers.
+  background-color: var(--card-background-color);
+
+  // The primary border-radius used is the div.main. This is only useful for
+  // keeping the background-color within the radius.
+  border-radius: var(--ha-card-border-radius, 4px);
+
+  height: var(--frigate-card-height);
+  min-height: 100px;
+
+  // Ensure all clicks at the top level work.
+  pointer-events: all;
+
+  // The standard HA header is 56 pixels tall, so that much off the top (header)
+  // and bottom (to maintain center), before doing the calculation of
+  // max-height. This matters on small mobile devices in landscape orientation.
+  --frigate-card-expand-max-height: calc((100vh - (2 * 56px)) * 0.85);
+  --frigate-card-expand-max-width: 85vw;
+  --frigate-card-expand-width: none;
+  --frigate-card-expand-height: none;
+  --frigate-card-expand-aspect-ratio: unset;
+
+  --frigate-card-height: auto;
+}
+
+frigate-card-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+:host([dark]) {
+  filter: brightness(75%);
+}
+:host([panel]) {
+  // Card always extends to the full allowed height in panel mode (in non-panel
+  // mode this would cause the card to expand to the height of a column when
+  // there are multiple cards in the column).
+  height: 100%;
+}
+
+div.main {
+  position: relative;
+
+  // Required to keep curved corners on the card.
+  overflow: auto;
+
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  display: block;
+
+  // Necessary to get Safari to show border-radius correctly.
+  transform: translateZ(0);
+
+  // Hide scrollbar: Firefox
+  scrollbar-width: none;
+  // Hide scrollbar: IE and Edge
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+div.main::-webkit-scrollbar {
+  display: none;
+}
+
+// Need to apply the border radius on the container level, as the ha-card has
+// overflow visible in order to allow a submenu to extend beyond the card
+// boundary. Need to be able to selectively curve top or bottom depending on
+// whether the outside menu is being shown. There's no way to select 'preceding
+// element' in CSS, so this must be implemented in JS.
+div.main.curve-top {
+  border-top-left-radius: var(--ha-card-border-radius, 4px);
+  border-top-right-radius: var(--ha-card-border-radius, 4px);
+}
+div.main.curve-bottom {
+  border-bottom-left-radius: var(--ha-card-border-radius, 4px);
+  border-bottom-right-radius: var(--ha-card-border-radius, 4px);
+}
+
+ha-card {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+
+  border: 0px;
+
+  // Some elements (such as submenus) may need to extend beyond the card boundary.
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+  position: static;
+  color: var(--secondary-text-color, white);
+}
+
+/************
+ * Fullscreen
+ *************/
+
+// Browsers will reject invalid whole CSS selectors if one selector is bad, so
+// need to use mixin here instead of just comma-separated selectors.
+//  - Related: https://stackoverflow.com/questions/16982449/why-isnt-it-possible-to-combine-vendor-specific-pseudo-elements-classes-into-on
+@mixin fullscreen-ha-card {
+  // Hide corners on Safari fullscreen.
+  border-radius: 0px;
+
+  // Theme styles may set these which are not helpful in fullscreen mode, reset
+  // them.
+  box-shadow: none;
+  margin: 0;
+}
+
+// Need to use an id selector here to overcome theme styling that may
+// incorrectly apply to ha-card style.
+:host(:fullscreen) #ha-card {
+  @include fullscreen-ha-card;
+}
+:host(:-webkit-full-screen) #ha-card {
+  @include fullscreen-ha-card;
+}
+
+@mixin fullscreen-no-rounded-corners {
+  // Hide corners on Safari fullscreen.
+  border-radius: 0px;
+}
+
+:host(:fullscreen) div.main,
+:host(:fullscreen) frigate-card-menu {
+  @include fullscreen-no-rounded-corners;
+}
+:host(:-webkit-full-screen) div.main,
+:host(:-webkit-full-screen) frigate-card-menu {
+  @include fullscreen-no-rounded-corners;
+}
+
+/***************
+ * Expanded mode
+ ***************/
+
+web-dialog {
+  --dialog-padding: 0px;
+  --dialog-container-padding: 0px;
+
+  --dialog-max-height: var(--frigate-card-expand-max-height);
+  --dialog-max-width: var(--frigate-card-expand-max-width);
+
+  --dialog-width: var(--frigate-card-expand-width);
+  --dialog-height: var(--frigate-card-expand-height);
+
+  // Allow submenus to flow outside the edge of the dialog.
+  --dialog-overflow-x: visible;
+  --dialog-overflow-y: visible;
+
+  // Required to ensure the dialog is centered vertically.
+  max-height: 100vh;
+}
+
+web-dialog::part(dialog) {
+  aspect-ratio: var(--frigate-card-expand-aspect-ratio);
+
+  // Fixes to render the dialog correctly in Safari.
+  border-radius: 0px;
+  background: transparent;
+}
+
+/*************************************
+ * "Outside" style for menu/status bar
+ *************************************/
+
+// Style is set on the children themselves, to avoid the need for the parent
+// outlay to prevent overflow (which needs to be enabled to menu items to be
+// visible). See similar approach in overlay.scss for overlay.
+
+.outerlay[data-position='top'] > *:first-child {
+  border-top-left-radius: var(--ha-card-border-radius, 4px);
+  border-top-right-radius: var(--ha-card-border-radius, 4px);
+}
+
+.outerlay[data-position='bottom'] > *:last-child {
+  border-bottom-left-radius: var(--ha-card-border-radius, 4px);
+  border-bottom-right-radius: var(--ha-card-border-radius, 4px);
+}
+
+/*******************
+ * Menu hover styles
+ *******************/
+
+frigate-card-menu {
+  z-index: 2;
+}
+
+frigate-card-menu[data-style*='hover'] {
+  transition: opacity 0.5s ease;
+  opacity: 0;
+}
+frigate-card-menu[data-style*='hover']:hover,
+.main:hover > frigate-card-overlay > frigate-card-menu[data-style='hover-card'] {
+  opacity: 1;
+}
+
+/*************************
+ * Status bar hover styles
+ *************************/
+
+frigate-card-status-bar {
+  z-index: 1;
+}
+
+frigate-card-status-bar[data-style*='hover'] {
+  transition: opacity 0.5s ease;
+  opacity: 0;
+}
+frigate-card-status-bar[data-style*='hover']:hover,
+.main:hover > frigate-card-overlay > frigate-card-status-bar[data-style='hover-card'] {
+  opacity: 1;
+}

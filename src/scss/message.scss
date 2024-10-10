@@ -1,0 +1,63 @@
+@use 'dotdotdot.scss';
+
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  // Ensure error messages are selectable.
+  user-select: text;
+  // Safari only has prefixed support.
+  -webkit-user-select: text;
+
+  color: var(--primary-text-color);
+}
+
+div.wrapper {
+  height: 100%;
+}
+
+div.message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+div.message.padded {
+  padding: 20px;
+}
+
+div.message div.contents {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-top: auto;
+  margin-bottom: auto;
+  min-width: 0;
+}
+
+div.message div.icon {
+  padding: 10px;
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.message a {
+  color: var(--primary-text-color, white);
+  word-break: break-word;
+}
+
+.message pre {
+  margin-top: 20px;
+  overflow-x: auto;
+  border: 1px dotted var(--divider-color);
+  padding: 1em;
+}

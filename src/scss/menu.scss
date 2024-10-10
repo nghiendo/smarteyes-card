@@ -1,0 +1,184 @@
+@use './button.scss';
+
+:host {
+  --frigate-card-menu-button-size: 40px;
+  --mdc-icon-button-size: var(--frigate-card-menu-button-size);
+  --mdc-icon-size: calc(var(--mdc-icon-button-size) / 2);
+
+  pointer-events: auto;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/*******************************************************
+ * Non-hover styles should not interact with the pointer
+ *******************************************************/
+
+:host(:not([data-style*='hover'])) {
+  pointer-events: none;
+}
+
+/***********************************
+ * Aligned divs: matching & opposing
+ ***********************************/
+
+div.matching,
+div.opposing {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: flex-start;
+
+  // Allow the divs to be resized.
+  min-width: 0px;
+  min-height: 0px;
+}
+div.matching {
+  justify-content: flex-start;
+}
+div.opposing {
+  justify-content: flex-end;
+}
+
+/********************
+ * Outside menu style
+ ********************/
+
+:host([data-style='outside']) {
+  width: 100%;
+  background: var(--secondary-background-color);
+}
+
+/********************************************************
+ * Hack: Ensure host & div expand for column flex layouts
+ ********************************************************/
+
+:host(:not([data-style='outside'])[data-position='left']) {
+  // Awful hack: Flexbox column wrapping doesn't work properly in most major
+  // browsers -- the element boundary does not expand to cover the full wrapped
+  // content as it should. This results in the wrapped 'content' appearing
+  // outside the element background (the linear gradient in this case). The
+  // workaround is to use flex row direction for both rows & columns, and use
+  // vertical-lr/vertical-rl as the writing mode for columns -- resetting
+  // writing-mode for descendant elements.
+  //
+  // For more information see the Chromium bug as an example:
+  // - https://bugs.chromium.org/p/chromium/issues/detail?id=507397
+  writing-mode: vertical-lr;
+}
+:host(:not([data-style='outside'])[data-position='right']) {
+  // See "Awful hack" above.
+  writing-mode: vertical-rl;
+}
+:host(:not([data-style='outside'])[data-style='overlay'][data-position='left']) div > *,
+:host(:not([data-style='outside'])[data-style='overlay'][data-position='right']) div > *,
+:host(:not([data-style='outside'])[data-style*='hover'][data-position='left']) div > *,
+:host(:not([data-style='outside'])[data-style*='hover'][data-position='right']) div > *,
+:host(:not([data-style='outside'])[data-style='hidden'][data-position='left']) div > *,
+:host(:not([data-style='outside'])[data-style='hidden'][data-position='right']) div > * {
+  // See "Awful hack" above. Note that this "cancelation" of writing mode only
+  // affects from beyond the divs, i.e. the writing mode hack applies to host
+  // and divs both.
+  writing-mode: horizontal-tb;
+}
+
+/**********************
+ * "Reverse" alignments
+ **********************/
+
+:host(:not([data-style='outside'])[data-position='left'][data-alignment='bottom']),
+:host(:not([data-style='outside'])[data-position='right'][data-alignment='bottom']),
+:host([data-position='top'][data-alignment='right']),
+:host([data-position='bottom'][data-alignment='right']),
+:host(:not([data-style='outside'])[data-position='left'][data-alignment='bottom']) div,
+:host(:not([data-style='outside'])[data-position='right'][data-alignment='bottom']) div,
+:host([data-position='top'][data-alignment='right']) div,
+:host([data-position='bottom'][data-alignment='right']) div {
+  flex-direction: row-reverse;
+}
+
+/****************************
+ * Wrap upwards on the bottom
+ ****************************/
+
+:host(:not([data-style='outside'])[data-position='bottom']) div {
+  // If the menu has more content that allows, "wrap upwards" to keep the
+  // Frigate button in the same place.
+  flex-wrap: wrap-reverse;
+}
+
+/********************************************
+ * Positioning for absolute based menu styles
+ ********************************************/
+
+:host([data-style='overlay']),
+:host([data-style*='hover']),
+:host([data-style='hidden']) {
+  overflow: hidden;
+  width: calc(var(--frigate-card-menu-button-size) + 6px);
+  height: calc(var(--frigate-card-menu-button-size) + 6px);
+}
+
+:host([data-style='overlay']),
+:host([data-style*='hover']),
+:host([data-style='hidden'][expanded]) {
+  overflow: visible;
+}
+
+:host([data-style='overlay'][data-position='top']),
+:host([data-style='overlay'][data-position='bottom']),
+:host([data-style*='hover'][data-position='top']),
+:host([data-style*='hover'][data-position='bottom']),
+:host([data-style='hidden'][data-position='top']),
+:host([data-style='hidden'][data-position='bottom']) {
+  width: 100%;
+  height: auto;
+}
+
+:host([data-style='overlay'][data-position='top'][data-alignment='left']),
+:host([data-style='overlay'][data-position='bottom'][data-alignment='left']),
+:host([data-style*='hover'][data-position='top'][data-alignment='left']),
+:host([data-style*='hover'][data-position='bottom'][data-alignment='left']),
+:host([data-style='hidden'][data-position='top'][data-alignment='left'][expanded]),
+:host([data-style='hidden'][data-position='bottom'][data-alignment='left'][expanded]) {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+}
+
+:host([data-style='overlay'][data-position='top'][data-alignment='right']),
+:host([data-style='overlay'][data-position='bottom'][data-alignment='right']),
+:host([data-style*='hover'][data-position='top'][data-alignment='right']),
+:host([data-style*='hover'][data-position='bottom'][data-alignment='right']),
+:host([data-style='hidden'][data-position='top'][data-alignment='right'][expanded]),
+:host([data-style='hidden'][data-position='bottom'][data-alignment='right'][expanded]) {
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+}
+
+:host([data-style='overlay'][data-position='left']),
+:host([data-style='overlay'][data-position='right']),
+:host([data-style*='hover'][data-position='left']),
+:host([data-style*='hover'][data-position='right']),
+:host([data-style='hidden'][data-position='left']),
+:host([data-style='hidden'][data-position='right']) {
+  width: auto;
+  height: 100%;
+}
+
+:host([data-style='overlay'][data-position='left'][data-alignment='top']),
+:host([data-style='overlay'][data-position='right'][data-alignment='top']),
+:host([data-style*='hover'][data-position='left'][data-alignment='top']),
+:host([data-style*='hover'][data-position='right'][data-alignment='top']),
+:host([data-style='hidden'][data-position='left'][data-alignment='top'][expanded]),
+:host([data-style='hidden'][data-position='right'][data-alignment='top'][expanded]) {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+}
+
+:host([data-style='overlay'][data-position='left'][data-alignment='bottom']),
+:host([data-style='overlay'][data-position='right'][data-alignment='bottom']),
+:host([data-style*='hover'][data-position='left'][data-alignment='bottom']),
+:host([data-style*='hover'][data-position='right'][data-alignment='bottom']),
+:host([data-style='hidden'][data-position='left'][data-alignment='bottom'][expanded]),
+:host([data-style='hidden'][data-position='right'][data-alignment='bottom'][expanded]) {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+}
